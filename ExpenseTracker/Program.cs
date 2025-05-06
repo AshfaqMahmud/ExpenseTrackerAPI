@@ -14,12 +14,24 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Enable serving static files (this will serve files from wwwroot)
+app.UseStaticFiles();
+
+//// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Expense Tracker API V1");
+    options.RoutePrefix = "swagger";  // Swagger will be available at /swagger
+});
+
+// Serve the index.html page at the root URL
+app.MapFallbackToFile("index.html");
 
 app.UseHttpsRedirection();
 
