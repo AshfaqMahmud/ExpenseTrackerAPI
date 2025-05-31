@@ -1,4 +1,3 @@
-
 using ExpenseTracker.Data;
 using ExpenseTracker.Models;
 using ExpenseTracker.Services;
@@ -23,20 +22,13 @@ internal class Program
         builder.Services.AddSingleton<BooksService>();
         // mongoDB configuration
 
-        builder.Services.Configure<ExpenseDatabaseSettings>(
-            builder.Configuration.GetSection("ExpenseDatabase")
-        );
-        builder.Services.AddSingleton<ExpenseService>();
+        
 
         builder.Services.AddControllers()
         .AddJsonOptions(
             options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
-        // builder.Services.AddDbContext<ApplicationDBContext>(options =>
-        //     options.UseSqlServer(
-        //         builder.Configuration.GetConnectionString("DefaultConnection")
-        //         )
-        // );
+      
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
@@ -46,7 +38,6 @@ internal class Program
             app.UseSwaggerUI(
                 options =>
                 {
-            
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Expense Tracker API V1");
                     
                 }       
