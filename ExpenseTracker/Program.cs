@@ -1,7 +1,6 @@
-using ExpenseTracker.Data;
 using ExpenseTracker.Models;
 using ExpenseTracker.Services;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 internal class Program
 {
@@ -16,13 +15,34 @@ internal class Program
         // this should be added before builder.Build()
 
 
-        // Add services to the container.
-        builder.Services.Configure<BookStoreDatabaseSettings>(
-            builder.Configuration.GetSection("BookStoreDatabase"));
-        builder.Services.AddSingleton<BooksService>();
-        // mongoDB configuration
+        //// Add services to the container.
+        //builder.Services.Configure<BookStoreDatabaseSettings>(
+        //    builder.Configuration.GetSection("BookStoreDatabase"));
+        //builder.Services.AddSingleton<BooksService>();
 
-        
+        // mongoDB configuration
+        builder.Services.AddSingleton<IMongoClient>(s =>
+        new MongoClient(builder.Configuration.GetConnectionString("MongoDbConnection")));
+
+        builder.Services.AddScoped(s =>
+        {
+            var client = s.GetRequiredService<IMongoClient>();
+            return client.GetDatabase("ExpenseDB");
+        });
+
+        builder.Services.AddScoped<ExpenseService>();
+        //builder.Services.Configure<ExpenseDBSettings>(
+        //    builder.Configuration.GetSection("ExpenseDatabase"));
+        //builder.Services.AddSingleton<ExpenseService>();
+
+        //builder.Services.AddScoped(s =>
+        //{
+        //    var client = s.GetRequiredService<IMongoClient>();
+        //    return client.GetDatabase(
+        //        builder.Configuration["ExpenseDatabase:DatabaseName"]);
+        //});
+
+        //builder.Services.AddScoped<ExpenseService>();
 
         builder.Services.AddControllers()
         .AddJsonOptions(
